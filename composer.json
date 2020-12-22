@@ -1,6 +1,6 @@
 {
 	"name": "sapphirecat/symfony-http-client-error-report",
-	"description": "Demonstratino of a CurlHttpClient failure mode",
+	"description": "Demonstration of a CurlHttpClient failure mode",
 	"minimum-stability": "stable",
 	"license": "MIT",
 	"require": {
