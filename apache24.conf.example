@@ -1,0 +1,8 @@
+<VirtualHost *:80>
+	DocumentRoot /local/symfony-http-client-error-report/public
+	ServerName example.com
+	<Directory /local/symfony-http-client-error-report/public>
+		AllowOverride none
+		Require all granted
+	</Directory>
+</VirtualHost>
