@@ -9,6 +9,7 @@ Demonstration of differential behavior between the Symfony CurlHttpClient and Na
     $ php client.php --curl --target http://{apache}/show-post.php
     $ php client.php --curl --target http://{apache}/show-post.php --plain
     $ php client.php --curl --target http://{apache}/show-post.php --encode-chunked
+    $ php client.php --curl --target https://httpbin.org/anything --encode-chunked
 
 Neither form data nor file attachment (when not using `--plain`) are received.  `php://input` is also empty.
 
@@ -16,6 +17,7 @@ Neither form data nor file attachment (when not using `--plain`) are received.  
 
     $ php client.php --target http://{apache}/show-post.php
     $ php client.php --curl --target http://{apache}/show-post.php --stringify
+    $ php client.php --curl --target http://{apache}/show-post.php --encode-chunked --stringify
     $ php client.php --curl --target http://{php-standalone}/show-post.php
     $ php client.php --curl --target http://{php-standalone}/show-post.php --encode-chunked
     $ php client.php --curl --target https://httpbin.org/anything
