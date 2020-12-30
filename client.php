@@ -70,10 +70,6 @@ if (isset($options['t']) && !isset($options['target'])) {
 } elseif (!isset($options['target'])) {
 	$options['target'] = 'https://httpbin.org/anything';
 }
-if ($options['encode-chunked'] && $options['stringify']) {
-	error_log("encode-chunked takes priority over stringify");
-	$options['stringify'] = false;
-}
 
 $client = $options['curl'] ? new CurlHttpClient() : new NativeHttpClient();
 
