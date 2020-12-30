@@ -15,7 +15,7 @@ function simplifyOptions(array $options, array $aliases): array
 	return $options;
 }
 
-function generateBody(string $boundary, bool $plain = false): Generator
+function generateBody(string $boundary, bool $plain = false, bool $addLength = false): Generator
 {
 	$fields = [
 		"Content-Disposition: form-data; name=\"user\"\r\n\r\nzer0cool",
@@ -26,10 +26,26 @@ function generateBody(string $boundary, bool $plain = false): Generator
 	}
 
 	foreach ($fields as $text) {
-		yield "--$boundary\r\n$text\r\n";
+		if (!strlen($text)) {
+			continue;
+		}
+
+		// no trailing "\r\n" here; it's being added automatically.  but we need
+		// to account for that in the length header.
+		$packet = "--$boundary\r\n$text";
+		if ($addLength) {
+			$packet = (2 + strlen($packet))."\r\n".$packet;
+		}
+
+		yield $packet;
 	}
 
-	yield "--$boundary--\r\n";
+	// add final boundary, then terminate chunked encoding with 0-byte trailer
+	$packet = "--$boundary--";
+	if ($addLength) {
+		$packet = (2 + strlen($packet))."\r\n".$packet;
+	}
+	yield $packet."\r\n0";
 }
 
 function getTextBody(iterable $source): string
@@ -43,12 +59,16 @@ function getTextBody(iterable $source): string
 
 
 
-$options = getopt('ch:ps', ['curl', 'target:', 'plain', 'stringify']);
-$options = simplifyOptions($options, ['curl' => 'c', 'plain' => 'p', 'stringify' => 's']);
+$options = getopt('cEh:ps', ['curl', 'encode-chunked', 'target:', 'plain', 'stringify']);
+$options = simplifyOptions($options, ['curl' => 'c', 'plain' => 'p', 'stringify' => 's', 'encode-chunked' => 'E']);
 if (isset($options['t']) && !isset($options['target'])) {
 	$options['target'] = $options['t'];
 } elseif (!isset($options['target'])) {
 	$options['target'] = 'https://httpbin.org/anything';
+}
+if ($options['encode-chunked'] && $options['stringify']) {
+	error_log("encode-chunked takes priority over stringify");
+	$options['stringify'] = false;
 }
 
 $client = $options['curl'] ? new CurlHttpClient() : new NativeHttpClient();
@@ -60,7 +80,7 @@ try {
 	exit(99);
 }
 
-$bodyIter = generateBody($boundary, $options['plain']);
+$bodyIter = generateBody($boundary, $options['plain'], $options['encode-chunked']);
 try {
 	$response = $client->request(
 		'POST',
