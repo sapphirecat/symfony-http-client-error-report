@@ -35,6 +35,8 @@ function generateBody(string $boundary, bool $plain = false, bool $addLength = f
 		$packet = "--$boundary\r\n$text";
 		if ($addLength) {
 			$packet = (2 + strlen($packet))."\r\n".$packet;
+		} else {
+			$packet .= "\r\n";
 		}
 
 		yield $packet;
@@ -44,8 +46,10 @@ function generateBody(string $boundary, bool $plain = false, bool $addLength = f
 	$packet = "--$boundary--";
 	if ($addLength) {
 		$packet = (2 + strlen($packet))."\r\n".$packet;
+		yield $packet."\r\n0";
+	} else {
+		yield $packet."\r\n";
 	}
-	yield $packet."\r\n0";
 }
 
 function getTextBody(iterable $source): string
