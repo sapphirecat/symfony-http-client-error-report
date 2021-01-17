@@ -2,6 +2,19 @@
 
 Demonstration of differential behavior between the Symfony CurlHttpClient and NativeHttpClient.
 
+# Demo Server (Docker)
+
+    $ docker-compose up
+
+Starts the Apache and PHP-FPM containers, exposing the app at port 8333.
+With these containers running, the client can be tested using its defaults:
+
+    $ php client.php
+    $ php client.php --curl
+
+(Tested on an Ubuntu 20.04 VM, with docker.io and docker-compose installed
+from the Ubuntu repository.)
+
 # Test Cases
 
 ## Problems

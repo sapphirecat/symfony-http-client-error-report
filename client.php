@@ -68,7 +68,8 @@ $options = simplifyOptions($options, ['curl' => 'c', 'plain' => 'p', 'stringify'
 if (isset($options['t']) && !isset($options['target'])) {
 	$options['target'] = $options['t'];
 } elseif (!isset($options['target'])) {
-	$options['target'] = 'https://httpbin.org/anything';
+	// Call into the "docker-compose up" setup by default
+	$options['target'] = 'http://127.0.0.1:8333/index.php';
 }
 
 $client = $options['curl'] ? new CurlHttpClient() : new NativeHttpClient();

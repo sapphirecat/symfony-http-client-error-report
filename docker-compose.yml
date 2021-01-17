@@ -1,0 +1,19 @@
+version: "3.0"
+
+services:
+  apache2:
+    build:
+      context: ./context
+      dockerfile: Dockerfile.apache2
+    image: apache2:httpclient39613
+    depends_on:
+      - php-fpm
+    ports:
+      - "8333:80"
+  php-fpm:
+    build:
+      context: ./context
+      dockerfile: Dockerfile.php-fpm
+    image: php-fpm:httpclient39613
+    ports:
+      - "9000"
